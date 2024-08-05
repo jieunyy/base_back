@@ -1,25 +1,29 @@
 spring:
+  application:
+    name: baseback
+
   datasource:
-    url: jdbc:h2:mem:testdb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    url: jdbc:mysql://mysql:3306/mydb
+    username: root
+    password: pass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
-
+    database-platform: org.hibernate.dialect.MySQL8Dialect
 
   security:
     oauth2:
       client:
         registration:
           naver:
-            client-id: YOUR_NAVER_CLIENT_ID
-            client-secret: YOUR_NAVER_CLIENT_SECRET
+            client-id: phFAgD1fUzpjf7d0gr9G
+            client-secret: I1pdz9ybaS
             client-authentication-method: POST
             authorization-grant-type: authorization_code
-            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://localhost:8080/auth/naver/callback"
             scope:
               - name
               - email
