@@ -9,6 +9,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +27,9 @@ public class NaverLoginController {
 
     @Value("${naver.redirect-uri}")
     private String redirectUri;
+
+    // Android 앱으로 리디렉션할 URI
+    private static final String ANDROID_APP_URI = "myapp://naverlogin/success";
 
     @GetMapping("/auth/naver/login")
     public RedirectView naverLogin() {
@@ -46,36 +51,27 @@ public class NaverLoginController {
             Map<String, String> tokenResponse = restTemplate.getForObject(tokenUrl, HashMap.class);
 
             if (tokenResponse == null || !tokenResponse.containsKey("access_token")) {
-                return "Token retrieval failed!"; // 에러 처리
+                // 에러 처리
+                return "redirect:/error?message=Token retrieval failed!";
             }
 
             String accessToken = tokenResponse.get("access_token");
+            String refreshToken = tokenResponse.get("refresh_token");
 
-            // 네이버 사용자 정보 요청
-            String profileUrl = "https://openapi.naver.com/v1/nid/me";
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", "Bearer " + accessToken);
-
-            HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(profileUrl, HttpMethod.GET, entity,
-                    new ParameterizedTypeReference<Map<String, Object>>() {});
-
-            if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
-                Map<String, Object> responseBody = response.getBody();
-                Map<String, Object> userProfile = (Map<String, Object>) responseBody.get("response");
-
-                // 사용자 정보를 가지고 필요한 작업 수행 (예: 사용자 등록, 로그인 처리 등)
-                System.out.println("User Profile: " + userProfile);
-                
-                return "로그인 성공"; // 적절한 페이지 또는 데이터를 반환
+            if (refreshToken != null) {
+                // Android 앱으로 리디렉션하기 위해 필요한 데이터를 URL로 전달
+                return "redirect:" + ANDROID_APP_URI + "&refresh_token=" + refreshToken;
             } else {
-                return "Profile retrieval failed!"; // 프로필 가져오기 실패
+                // 리프레시 토큰이 없는 경우 에러 처리
+                return "redirect:/error?message=Refresh token not found!";
             }
+
         } catch (Exception e) {
             e.printStackTrace();
-            return "Error occurred: " + e.getMessage(); // 예외 처리
+            return "redirect:/error?message=" + e.getMessage(); // 예외 처리
         }
     }
+
 
     // State 파라미터 생성 (CSRF 보호를 위해)
     private String generateState() {
