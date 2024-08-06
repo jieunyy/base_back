@@ -23,7 +23,7 @@ spring:
             client-secret: I1pdz9ybaS
             client-authentication-method: POST
             authorization-grant-type: authorization_code
-            redirect-uri: "http://localhost:8080/auth/naver/callback"
+            redirect-uri: "http://34.132.79.107:8080/auth/naver/callback"
             scope:
               - name
               - email
