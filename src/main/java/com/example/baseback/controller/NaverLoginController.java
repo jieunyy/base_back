@@ -1,3 +1,5 @@
+package com.example.baseback.controller;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,8 +56,7 @@ public class NaverLoginController {
                 // 에러 처리
                 return "redirect:/error?message=Token retrieval failed!";
             }
-
-            String accessToken = tokenResponse.get("access_token");
+            
             String refreshToken = tokenResponse.get("refresh_token");
 
             if (refreshToken != null) {
