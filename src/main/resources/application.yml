@@ -21,7 +21,7 @@ spring:
           naver:
             client-id: phFAgD1fUzpjf7d0gr9G
             client-secret: I1pdz9ybaS
-            client-authentication-method: POST
+            client-authentication-method: GET
             authorization-grant-type: authorization_code
             redirect-uri: "http://34.132.79.107:8080/auth/naver/callback"
             scope:
