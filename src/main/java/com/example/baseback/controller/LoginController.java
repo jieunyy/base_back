@@ -21,7 +21,7 @@ public class LoginController {
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
         System.out.println("Login attempt with username: " + loginRequest.getUsername());
         try (Connection connection = dataSource.getConnection()) {
-            String query = "SELECT * FROM Users WHERE user_id = ? AND user_password = ?";
+            String query = "SELECT * FROM Users WHERE username = ? AND user_password = ?";
             PreparedStatement statement = connection.prepareStatement(query);
             statement.setString(1, loginRequest.getUsername());
             statement.setString(2, loginRequest.getPassword());
